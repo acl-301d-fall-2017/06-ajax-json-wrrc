@@ -48,6 +48,8 @@ Article.fetchAll = () => {
     // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
 
     //TODO: This function takes in an argument. What do we pass in to loadAll()?
+        const localData = localStorage.getItem('rawData');
+        console.log('in the if statement');
         Article.loadAll(localData);
 
 
@@ -56,10 +58,13 @@ Article.fetchAll = () => {
 
 
     } else {
-        $.getJSON('data/hackerIpsum.json') 
-            .done(jsonData => {
-                localStorage.setItem(jsonData);
-                Article.loadAll(jsonData);
+        console.log('in the else statement');
+        $.getJSON('data/hackerIpsum.json')
+
+            .done(localData => { 
+                localStorage.setItem('rawData',JSON.stringify( localData));
+                Article.loadAll(localData);
+                // all objects need to run throught the toHtml method, addend all those to the page
             });
     // TODO: When we don't already have the rawData:
     // - we need to retrieve the JSON file from the server with AJAX (which jQuery method is best for this?)
