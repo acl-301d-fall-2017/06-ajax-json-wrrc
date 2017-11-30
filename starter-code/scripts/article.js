@@ -40,7 +40,7 @@ Article.prototype.toHtml = function() {
 Article.loadAll = rawData => {
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
-    rawData.forEach(articleObject => Article.all.push(new Article(articleObject)));
+    Article.all.forEach(articleObject => Article.all.push(new Article(articleObject)));
 };
 
 // REVIEW: This function will retrieve the data from either a local or remote source, and process it, then hand off control to the View.
@@ -51,15 +51,18 @@ Article.fetchAll = () => {
     // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
 
     //TODO: This function takes in an argument. What do we pass in to loadAll()?
-        Article.loadAll(localStorage.getItem('articles'));
+        Article.loadAll(localStorage.getItem('rawData'));
 
     //TODO: What method do we call to render the index page?
 
 
     } else {
-        const hackerData = $.getJSON('hackerIpsum.json');
-        localStorage.setItem('articles', hackerData);
-        Article.loadAll(localStorage.getItem('articles'));
+        const rawData = $.getJSON('data/hackerIpsum.json')
+        rawData.done( jsonData => {
+            localStorage.setItem('articles', jsonData);
+            Article.loadAll(jsonData);
+        })
+            .fail((res, status, err) => console.error(err));
 
     // TODO: When we don't already have the rawData:
     // - we need to retrieve the JSON file from the server with AJAX (which jQuery method is best for this?)
