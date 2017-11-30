@@ -38,6 +38,7 @@ Article.prototype.toHtml = function() {
 
 
 Article.loadAll = rawData => {
+    console.log('raw data is', rawData);
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
     Article.all.forEach(articleObject => Article.all.push(new Article(articleObject)));
@@ -51,17 +52,19 @@ Article.fetchAll = () => {
     // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
 
     //TODO: This function takes in an argument. What do we pass in to loadAll()?
-        Article.loadAll(localStorage.getItem('rawData'));
+        Article.loadAll(JSON.parse(localStorage.getItem('rawData')));
 
     //TODO: What method do we call to render the index page?
 
 
     } else {
-        const rawData = $.getJSON('data/hackerIpsum.json')
-        rawData.done( jsonData => {
-            localStorage.setItem('articles', jsonData);
-            Article.loadAll(jsonData);
-        })
+        $.getJSON('data/hackerIpsum.json')
+            .done( jsonData => {
+                const json = JSON.stringify(jsonData);
+                localStorage.setItem('rawData', json);
+                Article.loadAll(JSON.parse(json));
+                console.log('json is ', json);
+            })
             .fail((res, status, err) => console.error(err));
 
     // TODO: When we don't already have the rawData:
@@ -74,6 +77,5 @@ Article.fetchAll = () => {
     // COMMENT: Discuss the sequence of execution in this 'else' conditional. Why are these functions executed in this order?
     // PUT YOUR RESPONSE HERE
     }
+    articleView.initIndexPage();
 };
-
-Article.fetchAll();
