@@ -13,7 +13,8 @@ function Article (rawDataObj) {
 Article.all = [];
 
 // COMMENT: Why isn't this method written as an arrow function?
-// PUT YOUR RESPONSE HERE
+// It is not written as an arrow function because it uses the keyword this to instantiate each object, and in an arrow function, this would refer to the browser window, and not the instance. If the function was nested within another function, the 'this' would be local and an arrow function would work.
+
 Article.prototype.toHtml = function() {
     const template = Handlebars.compile($('#article-template').text());
 
@@ -21,7 +22,7 @@ Article.prototype.toHtml = function() {
 
     // COMMENT: What is going on in the line below? What do the question mark and colon represent? How have we seen this same logic represented previously?
     // Not sure? Check the docs!
-    // PUT YOUR RESPONSE HERE
+    // The question mark and colon are used as conditional operators. If the condition (on the left of the question mark) evaluates to true, it returns the expression on the left side of the colon. If the condition evaluates to false, it returns the expression on the right of the colon. We've seen this logic represented in if / else statements.
     this.publishStatus = this.publishedOn ? `published ${this.daysAgo} days ago` : '(draft)';
     this.body = marked(this.body);
 
@@ -33,7 +34,9 @@ Article.prototype.toHtml = function() {
 // REVIEW: This function will take the rawData, how ever it is provided, and use it to instantiate all the articles. This code is moved from elsewhere, and encapsulated in a simply-named function for clarity.
 
 // COMMENT: Where is this function called? What does 'rawData' represent now? How is this different from previous labs? Where did our forEach loop that looped through all articles and called .toHtml() move to?
-// PUT YOUR RESPONSE HERE
+
+// The function loadAll is called within the fetchAll function, if no localStorage data is found. Now it is being called inside another function (i.e., nested), and only called if needed. Before today's lab, the rawData was being represented as properties of the constructor function, used by the prototype to create an instance of the object. Now, those key-value propertie are housed within the class property 'all', attached to each Article, and no longer bound to the prototype.
+
 Article.loadAll = rawData => {
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
@@ -43,7 +46,7 @@ Article.loadAll = rawData => {
 // REVIEW: This function will retrieve the data from either a local or remote source, and process it, then hand off control to the View.
 Article.fetchAll = () => {
     // COMMENT: What is this 'if' statement checking for? Where was the rawData set to local storage?
-    // PUT YOUR RESPONSE HERE
+    // It's checking to see if rawData lives in local Storage. 
     if (localStorage.rawData) {
     // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
 
