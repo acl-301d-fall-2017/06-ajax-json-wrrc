@@ -44,15 +44,17 @@ Article.loadAll = rawData => {
 // REVIEW: This function will retrieve the data from either a local or remote source, and process it, then hand off control to the View.
 Article.fetchAll = () => {
     // COMMENT: What is this 'if' statement checking for? Where was the rawData set to local storage?
-    // PUT YOUR RESPONSE HERE
+    // The 'if' statement below is checking for the rawData in localStorage. Currently, there is not data in local storage. We will be setting the data in this function.
     if (localStorage.rawData) {
     // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
 
     //TODO: This function takes in an argument. What do we pass in to loadAll()?
-        Article.loadAll();
+       
 
-    //TODO: What method do we call to render the index page?
+        Article.loadAll(localStorage.rawData);
 
+        //TODO: What method do we call to render the index page?
+        Article.toHtml();
 
     } else {
     // TODO: When we don't already have the rawData:
@@ -61,7 +63,12 @@ Article.fetchAll = () => {
     // - we then need to load all the data into Article.all with the .loadAll function above
     // - then we can render the index page
 
-
+        const cacheData = $.getJSON('data/hackerIpsum.json', function (){
+            console.log('success');
+        })
+            .done(jsonData => {
+                localStorage.setItem('rawData',JSON.stringify(jsonData));
+            });
     // COMMENT: Discuss the sequence of execution in this 'else' conditional. Why are these functions executed in this order?
     // PUT YOUR RESPONSE HERE
     }
