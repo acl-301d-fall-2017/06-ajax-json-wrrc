@@ -64,13 +64,11 @@ Article.fetchAll = () => {
     // - we then need to load all the data into Article.all with the .loadAll function above
     // - then we can render the index page
 
-        const cacheData = $.getJSON('data/hackerIpsum.json', function (){
-            console.log('success');
-        })
+        const cacheData = $.getJSON('data/hackerIpsum.json')
             .done(jsonData => {
                 localStorage.setItem('rawData',JSON.stringify(jsonData));
             });
     // COMMENT: Discuss the sequence of execution in this 'else' conditional. Why are these functions executed in this order?
-    // PUT YOUR RESPONSE HERE
+    // .getJson needs to happen first because we need to grab the data. When that is completed, .done will run and the rest of that function will complete.
     }
 };
