@@ -45,16 +45,17 @@ Article.loadAll = rawData => {
 Article.fetchAll = () => {
     // COMMENT: What is this 'if' statement checking for? Where was the rawData set to local storage?
     // The 'if' statement below is checking for the rawData in localStorage. Currently, there is not data in local storage. We will be setting the data in this function.
-    if (localStorage.rawData) {
+    if (localStorage['rawData']) {
     // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
 
-    //TODO: This function takes in an argument. What do we pass in to loadAll()?
-       
-
-        Article.loadAll(localStorage.rawData);
+    //TODO: This function takes in an argument. What do we pass in to loadAll()?    
+        const articleArray = JSON.parse(localStorage.rawData);
+        Article.loadAll(articleArray);
 
         //TODO: What method do we call to render the index page?
-        Article.toHtml();
+        Article.all.forEach(function(item) {
+            $('#articles').append(item.toHtml());
+        });
 
     } else {
     // TODO: When we don't already have the rawData:
