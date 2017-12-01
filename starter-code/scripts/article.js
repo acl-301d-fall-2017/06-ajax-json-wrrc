@@ -33,7 +33,7 @@ Article.prototype.toHtml = function() {
 // REVIEW: This function will take the rawData, how ever it is provided, and use it to instantiate all the articles. This code is moved from elsewhere, and encapsulated in a simply-named function for clarity.
 
 // COMMENT: Where is this function called? What does 'rawData' represent now? How is this different from previous labs? Where did our forEach loop that looped through all articles and called .toHtml() move to?
-// Function is called on line 51 inside the fetchAll function. RawData represents 
+// Function is called on line 51 inside the fetchAll function. RawData represents
 Article.loadAll = rawData => {
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
@@ -49,21 +49,31 @@ Article.fetchAll = () => {
 
     //TODO: This function takes in an argument. What do we pass in to loadAll()?
         const localData = localStorage.getItem('rawData');
+        const parsedData = JSON.parse(localData);
         console.log('in the if statement');
-        Article.loadAll(localData);
+        Article.loadAll(parsedData);
 
 
         //TODO DONE?: What method do we call to render the index page?
-        Article.toHtml();
+        // Article.toHtml();
+        articleView.initIndexPage();
 
 
     } else {
         console.log('in the else statement');
         $.getJSON('data/hackerIpsum.json')
 
-            .done(localData => { 
+            .done(localData => {
                 localStorage.setItem('rawData',JSON.stringify( localData));
                 Article.loadAll(localData);
+                for(let i = 0; i < Article.all.length; i++){
+                    const item = Article.all[i];
+                    const itemHtml = item.toHtml();
+                    $('#articles').append(itemHtml);
+                    console.log(item);
+
+                }
+                // const newArticles = Article.all.toHtml();
                 // all objects need to run throught the toHtml method, addend all those to the page
             });
     // TODO: When we don't already have the rawData:
