@@ -41,23 +41,31 @@ Article.loadAll = rawData => {
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
     rawData.forEach(articleObject => Article.all.push(new Article(articleObject)));
+
 };
 
 // REVIEW: This function will retrieve the data from either a local or remote source, and process it, then hand off control to the View.
 Article.fetchAll = () => {
     // COMMENT: What is this 'if' statement checking for? Where was the rawData set to local storage?
-    // It's checking to see if rawData lives in local Storage. 
+    // It's checking to see if rawData lives in local Storage. rawData would be set to local storage if user had previously loaded that script.
     if (localStorage.rawData) {
-    // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
+        const arrayOfObjects = JSON.parse(localStorage.rawData);
+        // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
+        // populate arrayOfObjects array
+        // get local storage data to populate above
 
-    //TODO: This function takes in an argument. What do we pass in to loadAll()?
-        Article.loadAll();
-
+        //TODO: This function takes in an argument. What do we pass in to loadAll()?
+        Article.loadAll(arrayOfObjects);
+        console.log(arrayOfObjects);
     //TODO: What method do we call to render the index page?
-
 
     } else {
     // TODO: When we don't already have the rawData:
+        $.getJSON('/data/hackerIpsum.json')
+            .done(jsonData => {
+                Article.loadAll(jsonData);
+            })
+            .fail((res, status, err) => console.error(err));
     // - we need to retrieve the JSON file from the server with AJAX (which jQuery method is best for this?)
     // - we need to cache it in localStorage so we can skip the server call next time
     // - we then need to load all the data into Article.all with the .loadAll function above
