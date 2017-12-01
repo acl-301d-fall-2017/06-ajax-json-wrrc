@@ -41,7 +41,7 @@ Article.loadAll = rawData => {
     console.log('raw data is', rawData);
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
-    Article.all.forEach(articleObject => Article.all.push(new Article(articleObject)));
+    rawData.forEach(articleObject => Article.all.push(new Article(articleObject)));
 };
 
 // REVIEW: This function will retrieve the data from either a local or remote source, and process it, then hand off control to the View.
@@ -54,8 +54,8 @@ Article.fetchAll = () => {
     //TODO: This function takes in an argument. What do we pass in to loadAll()?
         Article.loadAll(JSON.parse(localStorage.getItem('rawData')));
 
-    //TODO: What method do we call to render the index page?
-
+        //TODO: What method do we call to render the index page?
+        articleView.initIndexPage();
 
     } else {
         $.getJSON('data/hackerIpsum.json')
@@ -63,10 +63,9 @@ Article.fetchAll = () => {
                 const json = JSON.stringify(jsonData);
                 localStorage.setItem('rawData', json);
                 Article.loadAll(JSON.parse(json));
-                console.log('json is ', json);
+                articleView.initIndexPage();
             })
             .fail((res, status, err) => console.error(err));
-
     // TODO: When we don't already have the rawData:
     // - we need to retrieve the JSON file from the server with AJAX (which jQuery method is best for this?)
     // - we need to cache it in localStorage so we can skip the server call next time
@@ -75,7 +74,9 @@ Article.fetchAll = () => {
 
 
     // COMMENT: Discuss the sequence of execution in this 'else' conditional. Why are these functions executed in this order?
-    // PUT YOUR RESPONSE HERE
+
+    // First we use jQuery to send an AJAX request to obtain the JSON file. Once that has finished, we stringify it and assign it to a variable, json, which we set into localStorage. Finally, we pull the parsed data out of local storage, and use it to initiate the index page. This sequence of events will only occur if the AJAX request is successful, otherwise, an error is returned in the console. 
+    // Each piece of this sequence relies on one or more of the previous steps to execute, so the order of events is critical. 
     }
-    articleView.initIndexPage();
+
 };

@@ -6,7 +6,9 @@
     "page": true,
     "$": true,
     "marked": true,
-    "hljs": true
+    "hljs": true,
+    "Article": true,
+    "articleView": true
   },
   "extends": "eslint:recommended",
   "parserOptions": {
@@ -20,6 +22,7 @@
     "es6": true
   },
   "rules": {
+    "no-console": "off",
     "semi": ["error", "always"],
     "quotes": ["warn", "single", {"allowTemplateLiterals": true}],
     "indent": ["error", 4],
