@@ -1,7 +1,6 @@
 'use strict';
 
-// TODO: Getting the articles to appear on the page
-//
+
 function Article (rawDataObj) {
     this.author = rawDataObj.author;
     this.authorUrl = rawDataObj.authorUrl;
@@ -28,7 +27,7 @@ Article.prototype.toHtml = function() {
     this.publishStatus = this.publishedOn ? `published ${this.daysAgo} days ago` : '(draft)';
     this.body = marked(this.body);
     return template(this);
-    
+
 };
 
 // : There are some other functions that also relate to all articles across the board, rather than just single instances. Object-oriented programming would call these "class-level" functions, that are relevant to the entire "class" of objects that are Articles.
@@ -37,14 +36,15 @@ Article.prototype.toHtml = function() {
 
 // COMMENT: Where is this function called? What does 'rawData' represent now? How is this different from previous labs? Where did our forEach loop that looped through all articles and called .toHtml() move to?
 
-// The function loadAll is called within the fetchAll function, if no localStorage data is found. Now it is being called inside another function (i.e., nested), and only called if needed. Before today's lab, the rawData was being represented as properties of the constructor function, used by the prototype to create an instance of the object. Now, those key-value propertie are housed within the class property 'all', attached to each Article, and no longer bound to the prototype.
+// The function loadAll is called within the fetchAll function, if no localStorage data is found. Now it is being called inside another function (i.e., nested), and only called if needed. Before today's lab, the rawData was being represented as properties of the constructor function, used by the prototype to create an instance of the object. Now, those key-value properties are housed within the class property 'all', attached to each Article, and no longer bound to the prototype.  The raw data now lives in a JSON file instead of the JS file as an array of objects.
 
 Article.loadAll = rawData => {
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
     rawData.forEach(articleObject => Article.all.push(new Article(articleObject)));
-    // TODO: we're going to use this to populate articles onto the page.
+
 };
+
 
 // REVIEW: This function will retrieve the data from either a local or remote source, and process it, then hand off control to the View.
 Article.fetchAll = () => {
@@ -53,23 +53,23 @@ Article.fetchAll = () => {
     if (localStorage['rawData']) {
         const arrayOfObjects = JSON.parse(localStorage.rawData);
         // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
-        // populate arrayOfObjects array
-        // get local storage data to populate above
 
         //TODO: This function takes in an argument. What do we pass in to loadAll()?
         Article.loadAll(arrayOfObjects);
-        console.log(arrayOfObjects);
-    //TODO: What method do we call to render the index page?
+        //TODO: What method do we call to render the index page?
+        articleView.initIndexPage();
 
     } else {
     // TODO: When we don't already have the rawData:
         $.getJSON('./data/hackerIpsum.json')
             .done(jsonData => {
                 Article.loadAll(jsonData);
-                localStorage.setItem('rawData', JSON.stringify(jsonData)); // experimental
+                localStorage.setItem('rawData', JSON.stringify(jsonData));
+                articleView.initIndexPage();
+
             })
-            .fail((res, status, err) => console.error(err));
-            
+            .fail((res, status, err) => console.error(err)); // eslint-disable-line
+
     // - we need to retrieve the JSON file from the server with AJAX (which jQuery method is best for this?)
     // - we need to cache it in localStorage so we can skip the server call next time
     // - we then need to load all the data into Article.all with the .loadAll function above
@@ -77,6 +77,6 @@ Article.fetchAll = () => {
 
 
     // COMMENT: Discuss the sequence of execution in this 'else' conditional. Why are these functions executed in this order?
-    // PUT YOUR RESPONSE HERE
+    // The sequence tells the file path for JSON to get the data, then to load the data it got, then to put it in local storage, then to render it onto the page. It can't render the information on the page until it has been cached into local storage.
     }
 };
