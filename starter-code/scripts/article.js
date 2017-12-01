@@ -1,5 +1,7 @@
 'use strict';
 
+// TODO: Getting the articles to appear on the page
+//
 function Article (rawDataObj) {
     this.author = rawDataObj.author;
     this.authorUrl = rawDataObj.authorUrl;
@@ -25,8 +27,8 @@ Article.prototype.toHtml = function() {
     // The question mark and colon are used as conditional operators. If the condition (on the left of the question mark) evaluates to true, it returns the expression on the left side of the colon. If the condition evaluates to false, it returns the expression on the right of the colon. We've seen this logic represented in if / else statements.
     this.publishStatus = this.publishedOn ? `published ${this.daysAgo} days ago` : '(draft)';
     this.body = marked(this.body);
-
     return template(this);
+    
 };
 
 // : There are some other functions that also relate to all articles across the board, rather than just single instances. Object-oriented programming would call these "class-level" functions, that are relevant to the entire "class" of objects that are Articles.
@@ -41,14 +43,14 @@ Article.loadAll = rawData => {
     rawData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)));
 
     rawData.forEach(articleObject => Article.all.push(new Article(articleObject)));
-
+    // TODO: we're going to use this to populate articles onto the page.
 };
 
 // REVIEW: This function will retrieve the data from either a local or remote source, and process it, then hand off control to the View.
 Article.fetchAll = () => {
     // COMMENT: What is this 'if' statement checking for? Where was the rawData set to local storage?
     // It's checking to see if rawData lives in local Storage. rawData would be set to local storage if user had previously loaded that script.
-    if (localStorage.rawData) {
+    if (localStorage['rawData']) {
         const arrayOfObjects = JSON.parse(localStorage.rawData);
         // REVIEW: When rawData is already in localStorage we can load it with the .loadAll function above and then render the index page (using the proper method on the articleView object).
         // populate arrayOfObjects array
@@ -61,11 +63,13 @@ Article.fetchAll = () => {
 
     } else {
     // TODO: When we don't already have the rawData:
-        $.getJSON('/data/hackerIpsum.json')
+        $.getJSON('./data/hackerIpsum.json')
             .done(jsonData => {
                 Article.loadAll(jsonData);
+                localStorage.setItem('rawData', JSON.stringify(jsonData)); // experimental
             })
             .fail((res, status, err) => console.error(err));
+            
     // - we need to retrieve the JSON file from the server with AJAX (which jQuery method is best for this?)
     // - we need to cache it in localStorage so we can skip the server call next time
     // - we then need to load all the data into Article.all with the .loadAll function above
