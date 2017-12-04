@@ -84,10 +84,9 @@ articleView.initNewArticlePage = () => {
 };
 
 articleView.create = () => {
-    let article;
     $('#articles').empty();
 
-    article = new Article({
+    const article = new Article({
         title: $('#article-title').val(),
         author: $('#article-author').val(),
         authorUrl: $('#article-author-url').val(),
@@ -107,6 +106,7 @@ articleView.create = () => {
 
 
 articleView.initIndexPage = () => {
+    console.log('Article.all is ', Article.all);
     Article.all.forEach(article => {
         $('#articles').append(article.toHtml());
     });
