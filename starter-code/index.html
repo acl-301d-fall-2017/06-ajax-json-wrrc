@@ -85,9 +85,9 @@
     <script src="scripts/articleView.js"></script>
     <script>
       // TODO: What model function do we need to call, to initiate the retrieval of data?
-
+      Article.fetchAll();
       // COMMENT: What is this function doing? Why do we need it?
-      // PUT YOUR RESPONSE HERE
+      // This function is fetching the data from local storage if it exists. If it doesn't exist, it creates all the object instances. We are also calling the toHTML method in both the if and else statements of fetch all.  We need to call it in both cases, because local storage may, or may not, exist.
     </script>
   </body>
 </html>

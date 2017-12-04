@@ -84,10 +84,10 @@ articleView.initNewArticlePage = () => {
 };
 
 articleView.create = () => {
-    let article;
+    let article; // eslint-disable-line
     $('#articles').empty();
 
-    article = new Article({
+    const article = new Article({ // eslint-disable-line
         title: $('#article-title').val(),
         author: $('#article-author').val(),
         authorUrl: $('#article-author-url').val(),
