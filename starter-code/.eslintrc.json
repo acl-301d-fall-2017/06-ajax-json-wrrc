@@ -6,7 +6,9 @@
     "page": true,
     "$": true,
     "marked": true,
-    "hljs": true
+    "hljs": true,
+    "articleView": true,
+    "Article": true
   },
   "extends": "eslint:recommended",
   "parserOptions": {
